@@ -1,0 +1,234 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-06-01",
+  "courses": {
+    "python": {
+      "beginner": [
+        {
+          "id": "py-b1",
+          "title": "Python Basics Refresher",
+          "url": "https://kaggle.com/learn/python",
+          "duration_hours": 5,
+          "type": "interactive",
+          "tags": ["variables", "loops", "functions", "syntax"],
+          "description": "Official Kaggle Python course covering all fundamentals."
+        },
+        {
+          "id": "py-b2",
+          "title": "CS50P – Introduction to Python",
+          "url": "https://cs50.harvard.edu/python",
+          "duration_hours": 12,
+          "type": "video+exercises",
+          "tags": ["functions", "oop", "file-io", "regex"],
+          "description": "Harvard's free Python course — thorough and project-driven."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "py-i1",
+          "title": "Intermediate Python (Kaggle)",
+          "url": "https://kaggle.com/learn/intermediate-machine-learning",
+          "duration_hours": 4,
+          "type": "interactive",
+          "tags": ["list-comprehensions", "decorators", "generators", "context-managers"],
+          "description": "Covers Pythonic patterns used in data science."
+        }
+      ]
+    },
+    "machine_learning": {
+      "beginner": [
+        {
+          "id": "ml-b1",
+          "title": "Intro to Machine Learning (Kaggle)",
+          "url": "https://kaggle.com/learn/intro-to-machine-learning",
+          "duration_hours": 3,
+          "type": "interactive",
+          "tags": ["decision-trees", "model-validation", "random-forests", "overfitting"],
+          "description": "Perfect first ML course — visual, intuitive, and hands-on."
+        },
+        {
+          "id": "ml-b2",
+          "title": "Andrew Ng – ML Specialization",
+          "url": "https://coursera.org/specializations/machine-learning-introduction",
+          "duration_hours": 33,
+          "type": "video+assignments",
+          "tags": ["linear-regression", "gradient-descent", "neural-networks", "supervised-learning"],
+          "description": "The gold-standard ML course. Great for theoretical grounding."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "ml-i1",
+          "title": "Feature Engineering (Kaggle)",
+          "url": "https://kaggle.com/learn/feature-engineering",
+          "duration_hours": 5,
+          "type": "interactive",
+          "tags": ["feature-importance", "clustering", "pca", "target-encoding"],
+          "description": "Practical feature engineering for Kaggle competitions."
+        },
+        {
+          "id": "ml-i2",
+          "title": "Hands-On ML with Scikit-Learn & TensorFlow",
+          "url": "https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/",
+          "duration_hours": 40,
+          "type": "book",
+          "tags": ["scikit-learn", "tensorflow", "pipelines", "ensemble-methods"],
+          "description": "The practitioner's bible — covers everything from SVMs to deep learning."
+        }
+      ]
+    },
+    "deep_learning": {
+      "beginner": [
+        {
+          "id": "dl-b1",
+          "title": "fast.ai Practical Deep Learning",
+          "url": "https://fast.ai",
+          "duration_hours": 20,
+          "type": "video+notebooks",
+          "tags": ["pytorch", "transfer-learning", "cnns", "nlp-basics"],
+          "description": "Top-down, practical deep learning — best way to learn by doing."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "dl-i1",
+          "title": "Deep Learning Specialization (Coursera)",
+          "url": "https://coursera.org/specializations/deep-learning",
+          "duration_hours": 80,
+          "type": "video+assignments",
+          "tags": ["backpropagation", "rnns", "cnns", "hyperparameter-tuning", "batch-norm"],
+          "description": "Andrew Ng's 5-course deep learning deep dive."
+        },
+        {
+          "id": "dl-i2",
+          "title": "Intro to Deep Learning (Kaggle)",
+          "url": "https://kaggle.com/learn/intro-to-deep-learning",
+          "duration_hours": 6,
+          "type": "interactive",
+          "tags": ["keras", "dense-layers", "dropout", "batch-norm"],
+          "description": "Kaggle's hands-on DL intro using Keras and TensorFlow."
+        }
+      ]
+    },
+    "nlp": {
+      "beginner": [
+        {
+          "id": "nlp-b1",
+          "title": "NLP with Classification & Vector Spaces",
+          "url": "https://coursera.org/learn/classification-vector-spaces-in-nlp",
+          "duration_hours": 18,
+          "type": "video+assignments",
+          "tags": ["tokenization", "word-vectors", "sentiment-analysis", "naive-bayes"],
+          "description": "Foundation NLP concepts with hands-on assignments."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "nlp-i1",
+          "title": "Hugging Face NLP Course",
+          "url": "https://huggingface.co/learn/nlp-course",
+          "duration_hours": 15,
+          "type": "interactive",
+          "tags": ["transformers", "bert", "fine-tuning", "datasets", "tokenizers"],
+          "description": "The definitive guide to transformers and modern NLP."
+        }
+      ]
+    },
+    "javascript": {
+      "beginner": [
+        {
+          "id": "js-b1",
+          "title": "The Odin Project – Foundations",
+          "url": "https://theodinproject.com/paths/foundations",
+          "duration_hours": 60,
+          "type": "project-based",
+          "tags": ["variables", "dom", "events", "functions", "arrays", "objects"],
+          "description": "The best free, project-driven JS curriculum. Comprehensive and practical."
+        },
+        {
+          "id": "js-b2",
+          "title": "javascript.info",
+          "url": "https://javascript.info",
+          "duration_hours": 25,
+          "type": "reading+exercises",
+          "tags": ["closures", "prototypes", "async", "promises", "scope"],
+          "description": "The modern JS bible — clear, deep, beautifully written."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "js-i1",
+          "title": "You Don't Know JS (book series)",
+          "url": "https://github.com/getify/You-Dont-Know-JS",
+          "duration_hours": 30,
+          "type": "book",
+          "tags": ["this-keyword", "closures", "prototype-chain", "async-patterns", "types"],
+          "description": "Goes deep into JS internals. Essential for intermediate developers."
+        },
+        {
+          "id": "js-i2",
+          "title": "JavaScript30 by Wes Bos",
+          "url": "https://javascript30.com",
+          "duration_hours": 10,
+          "type": "video+projects",
+          "tags": ["dom-manipulation", "css-variables", "local-storage", "canvas", "fetch"],
+          "description": "30 projects in 30 days — pure JS, no frameworks, great for muscle memory."
+        }
+      ]
+    },
+    "data_analysis": {
+      "beginner": [
+        {
+          "id": "da-b1",
+          "title": "Pandas (Kaggle)",
+          "url": "https://kaggle.com/learn/pandas",
+          "duration_hours": 4,
+          "type": "interactive",
+          "tags": ["dataframes", "groupby", "merging", "indexing", "filtering"],
+          "description": "Essential Pandas for data wrangling — interactive and concise."
+        },
+        {
+          "id": "da-b2",
+          "title": "Data Visualization (Kaggle)",
+          "url": "https://kaggle.com/learn/data-visualization",
+          "duration_hours": 4,
+          "type": "interactive",
+          "tags": ["matplotlib", "seaborn", "plotly", "distributions", "regression-plots"],
+          "description": "Visual storytelling with Python — practical charts for EDA."
+        }
+      ]
+    },
+    "ai_agents": {
+      "beginner": [
+        {
+          "id": "agent-b1",
+          "title": "Kaggle 5-Day AI Agents Intensive",
+          "url": "https://kaggle.com/learn-guide/5-day-genai-intensive-course-with-google",
+          "duration_hours": 10,
+          "type": "intensive",
+          "tags": ["multi-agent", "mcp", "tools", "orchestration", "gemini"],
+          "description": "The very course this project is for — an excellent overview of AI agents."
+        }
+      ],
+      "intermediate": [
+        {
+          "id": "agent-i1",
+          "title": "LangGraph Multi-Agent Systems",
+          "url": "https://langchain-ai.github.io/langgraph/tutorials/multi_agent/multi-agent-collaboration/",
+          "duration_hours": 8,
+          "type": "interactive",
+          "tags": ["state-machines", "graph-agents", "tool-use", "orchestration"],
+          "description": "LangGraph's official tutorial on building multi-agent systems."
+        }
+      ]
+    }
+  },
+  "topic_aliases": {
+    "ml": "machine_learning",
+    "dl": "deep_learning",
+    "js": "javascript",
+    "data": "data_analysis",
+    "pandas": "data_analysis",
+    "agents": "ai_agents"
+  }
+}

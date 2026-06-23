@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech-Restart — Learning Companion</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sky: {
+              50:  '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+            },
+            glass: 'rgba(255,255,255,0.72)',
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body:    ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'glass':  '0 4px 24px 0 rgba(14,165,233,0.08)',
+            'card':   '0 2px 16px 0 rgba(14,165,233,0.10)',
+            'hover':  '0 8px 32px 0 rgba(14,165,233,0.18)',
+          },
+          backgroundImage: {
+            'hero-gradient': 'linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 40%, #bae6fd 100%)',
+            'card-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,249,255,0.8) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(160deg, #f0f9ff 0%, #ffffff 45%, #e0f2fe 100%);
+      min-height: 100vh;
+      color: #0f172a;
+    }
+
+    /* ── Glass Card ── */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(186, 230, 253, 0.5);
+      box-shadow: 0 4px 24px rgba(14, 165, 233, 0.08);
+      transition: box-shadow 0.25s ease, transform 0.2s ease;
+    }
+    .glass-card:hover { box-shadow: 0 8px 36px rgba(14, 165, 233, 0.16); }
+
+    /* ── Floating orbs (ambient) ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 500px; height: 500px; background: #7dd3fc; top: -100px; right: -100px; }
+    .orb-2 { width: 350px; height: 350px; background: #38bdf8; bottom: 80px; left: -80px; }
+
+    /* ── Step navigation pills ── */
+    .step-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 999px;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      color: #64748b;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(186,230,253,0.4);
+    }
+    .step-pill.active {
+      background: #0ea5e9; color: white;
+      border-color: #0ea5e9;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+    }
+    .step-pill .dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      background: rgba(14,165,233,0.15); color: #0284c7;
+    }
+    .step-pill.active .dot { background: rgba(255,255,255,0.25); color: white; }
+    .step-pill.done .dot { background: #10b981; color: white; }
+    .step-pill.done { border-color: #a7f3d0; color: #065f46; background: rgba(209,250,229,0.6); }
+
+    /* ── Topic chip ── */
+    .topic-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 10px;
+      font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; user-select: none;
+      border: 2px solid rgba(186,230,253,0.6);
+      background: rgba(240,249,255,0.8);
+      color: #0369a1;
+      transition: all 0.18s;
+    }
+    .topic-chip:hover { border-color: #38bdf8; box-shadow: 0 2px 12px rgba(14,165,233,0.15); }
+    .topic-chip.selected {
+      background: #0ea5e9; color: white;
+      border-color: #0ea5e9;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.30);
+    }
+
+    /* ── Confidence slider ── */
+    .conf-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 6px; border-radius: 999px;
+      background: linear-gradient(to right, #0ea5e9 0%, #0ea5e9 var(--val,50%), #e0f2fe var(--val,50%), #e0f2fe 100%);
+      outline: none; cursor: pointer;
+    }
+    .conf-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #0ea5e9; border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(14,165,233,0.4);
+      cursor: pointer;
+    }
+
+    /* ── Phase badge ── */
+    .phase-badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+    }
+    .phase-1 { background: #dbeafe; color: #1d4ed8; }
+    .phase-2 { background: #e0f2fe; color: #0369a1; }
+    .phase-3 { background: #d1fae5; color: #065f46; }
+
+    /* ── Progress bar ── */
+    .progress-bar-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Button ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white; font-weight: 600;
+      padding: 12px 28px; border-radius: 12px;
+      border: none; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.35);
+      transition: all 0.2s; font-size: 0.9rem;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(14,165,233,0.45);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .btn-ghost {
+      background: rgba(14,165,233,0.08);
+      color: #0284c7; font-weight: 600;
+      padding: 10px 22px; border-radius: 10px;
+      border: 1.5px solid rgba(14,165,233,0.2);
+      cursor: pointer; font-size: 0.88rem;
+      transition: all 0.18s;
+    }
+    .btn-ghost:hover { background: rgba(14,165,233,0.14); border-color: #0ea5e9; }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 3px solid #e0f2fe;
+      border-top-color: #0ea5e9;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ── Agent log badge ── */
+    .agent-log-line {
+      font-size: 0.78rem; padding: 4px 0;
+      border-bottom: 1px solid rgba(186,230,253,0.3);
+      color: #475569;
+    }
+    .agent-log-line:last-child { border-bottom: none; }
+
+    /* ── Resource card ── */
+    .resource-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 16px; border-radius: 12px;
+      background: rgba(240,249,255,0.7);
+      border: 1px solid rgba(186,230,253,0.5);
+      transition: all 0.18s;
+    }
+    .resource-card:hover {
+      background: rgba(224,242,254,0.9);
+      border-color: #7dd3fc;
+      transform: translateX(3px);
+    }
+
+    /* ── Score ring ── */
+    .score-ring { position: relative; }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .score-text {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* ── Fade-in animation ── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+
+    /* ── Week card ── */
+    .week-card {
+      border-left: 3px solid #0ea5e9;
+      padding-left: 16px;
+    }
+
+    /* ── Section header ── */
+    .section-label {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #0ea5e9;
+    }
+
+    /* Page views */
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+  </style>
+</head>
+
+<body class="relative">
+  <!-- Ambient orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- ═══════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════ -->
+  <header class="relative z-10 border-b border-sky-100 bg-white/70 backdrop-blur-sm sticky top-0">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-display font-700 text-slate-800 leading-none text-base">Tech-Restart</div>
+          <div class="text-xs text-sky-500 font-medium">Learning Companion</div>
+        </div>
+      </div>
+
+      <!-- Step nav -->
+      <nav class="hidden md:flex items-center gap-2" id="stepNav">
+        <button class="step-pill active" onclick="goToStep(1)" data-step="1">
+          <span class="dot">1</span> Assess
+        </button>
+        <div class="w-6 h-px bg-sky-200"></div>
+        <button class="step-pill" onclick="goToStep(2)" data-step="2">
+          <span class="dot">2</span> Roadmap
+        </button>
+        <div class="w-6 h-px bg-sky-200"></div>
+        <button class="step-pill" onclick="goToStep(3)" data-step="3">
+          <span class="dot">3</span> Resources
+        </button>
+      </nav>
+
+      <div class="text-xs text-slate-400 font-medium hidden sm:block">Kaggle AI Agents Intensive</div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════ -->
+  <main class="relative z-10 max-w-5xl mx-auto px-6 py-10">
+
+    <!-- ─── PAGE 1: ASSESSMENT ─── -->
+    <div id="page1" class="page-view active fade-in">
+
+      <!-- Hero -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 border border-sky-200 text-sky-600 text-xs font-semibold mb-6">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+          </svg>
+          Multi-Agent System · MCP Integration · 100% Local
+        </div>
+        <h1 class="font-display text-4xl md:text-5xl font-700 text-slate-800 leading-tight mb-4">
+          Ready to Restart Your<br/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-sky-700">
+            Tech Learning?
+          </span>
+        </h1>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto">
+          Three AI agents will assess your knowledge gaps, build a personalised roadmap, and surface the best resources — all in seconds.
+        </p>
+      </div>
+
+      <!-- Assessment Form Card -->
+      <div class="glass-card rounded-2xl p-8 mb-6">
+
+        <!-- Student Name -->
+        <div class="mb-8">
+          <label class="section-label mb-3 block">Your Name</label>
+          <input id="studentName"
+            type="text"
+            placeholder="e.g. Anuj Sharma"
+            maxlength="80"
+            class="w-full max-w-sm px-4 py-3 rounded-xl border border-sky-200 bg-sky-50/60 text-slate-700 font-medium placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+          />
+        </div>
+
+        <!-- Topic Selection -->
+        <div class="mb-8">
+          <label class="section-label mb-1 block">Select Topics to Restart</label>
+          <p class="text-sm text-slate-400 mb-4">Choose every subject you want covered in your refresher roadmap.</p>
+          <div class="flex flex-wrap gap-3" id="topicChips">
+            <!-- Chips injected by JS -->
+          </div>
+        </div>
+
+        <!-- Confidence Sliders -->
+        <div id="confidenceSection" class="hidden">
+          <div class="section-label mb-1 block">Rate Your Current Confidence</div>
+          <p class="text-sm text-slate-400 mb-6">0 = Completely forgotten · 100 = Could teach it</p>
+          <div id="sliderContainer" class="space-y-6"></div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div>
+            <label class="section-label mb-1 block">Refresher Timeline</label>
+            <p class="text-xs text-slate-400">How many weeks do you have?</p>
+          </div>
+          <div class="flex items-center gap-3 ml-auto">
+            <button onclick="adjustWeeks(-1)" class="w-8 h-8 rounded-full border border-sky-200 bg-sky-50 text-sky-600 font-bold flex items-center justify-center hover:bg-sky-100 transition">−</button>
+            <span id="weeksDisplay" class="font-display font-700 text-2xl text-slate-800 w-10 text-center">4</span>
+            <button onclick="adjustWeeks(1)" class="w-8 h-8 rounded-full border border-sky-200 bg-sky-50 text-sky-600 font-bold flex items-center justify-center hover:bg-sky-100 transition">+</button>
+            <span class="text-slate-500 text-sm font-medium">weeks</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-8 flex items-center gap-4">
+          <button id="analyzeBtn" class="btn-primary" onclick="runAnalysis()" disabled>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            Run Multi-Agent Analysis
+          </button>
+          <span class="text-xs text-slate-400">3 agents · ~2 seconds · 100% local</span>
+        </div>
+      </div>
+
+      <!-- Agent overview mini-cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="glass-card rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+          <div class="font-display font-600 text-slate-800 text-sm mb-1">Diagnostic Agent</div>
+          <div class="text-xs text-slate-500">Evaluates your confidence scores per subtopic and identifies critical knowledge gaps.</div>
+        </div>
+        <div class="glass-card rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          </div>
+          <div class="font-display font-600 text-slate-800 text-sm mb-1">Roadmap Architect</div>
+          <div class="text-xs text-slate-500">Designs a week-by-week phased refresher plan with concrete milestones.</div>
+        </div>
+        <div class="glass-card rounded-xl p-5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <div class="font-display font-600 text-slate-800 text-sm mb-1">Resource Scout</div>
+          <div class="text-xs text-slate-500">Queries the local MCP server for curated courses, books, and interactive platforms.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── LOADING STATE ─── -->
+    <div id="loadingView" class="hidden text-center py-20 fade-in">
+      <div class="flex flex-col items-center gap-6">
+        <div class="spinner"></div>
+        <div>
+          <div class="font-display font-600 text-xl text-slate-800 mb-2" id="loadingText">Initialising agents…</div>
+          <div class="text-sm text-slate-400">Agents are collaborating on your personalised plan</div>
+        </div>
+        <div id="agentProgressLog" class="text-left max-w-md w-full glass-card rounded-xl p-4 font-mono text-xs text-slate-500 space-y-1 min-h-[80px]"></div>
+      </div>
+    </div>
+
+    <!-- ─── PAGE 2: ROADMAP ─── -->
+    <div id="page2" class="page-view fade-in">
+      <div id="roadmapContent"></div>
+    </div>
+
+    <!-- ─── PAGE 3: RESOURCES ─── -->
+    <div id="page3" class="page-view fade-in">
+      <div id="resourcesContent"></div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer class="relative z-10 border-t border-sky-100 mt-16 py-6">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="text-xs text-slate-400">
+        Tech-Restart Learning Companion · Kaggle 5-Day AI Agents Intensive · 2025
+      </div>
+      <div class="flex items-center gap-4 text-xs text-slate-400">
+        <span class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          Backend: 100% Local
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+          MCP Server Active
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════ -->
+  <script>
+  // ─── CONFIG ───────────────────────────────
+  const API_BASE  = 'http://localhost:5000/api';
+  const MCP_BASE  = 'http://localhost:5001/mcp';
+  let currentStep = 1;
+  let weeks       = 4;
+  let result      = null;
+
+  // ─── TOPIC DEFINITIONS ────────────────────
+  const TOPICS = [
+    { id: 'python',          label: 'Python',          icon: '🐍', subtopics: ['syntax','functions','oop','data_structures','list_comprehensions','generators'] },
+    { id: 'machine_learning',label: 'Machine Learning', icon: '🤖', subtopics: ['model_validation','overfitting','feature_engineering','gradient_descent','ensemble_methods'] },
+    { id: 'deep_learning',   label: 'Deep Learning',   icon: '🧠', subtopics: ['neural_networks','backpropagation','activations','cnns','rnns'] },
+    { id: 'javascript',      label: 'JavaScript',      icon: '⚡', subtopics: ['scope','closures','async_promises','dom_manipulation','es6_syntax','event_loop'] },
+    { id: 'nlp',             label: 'NLP',             icon: '📝', subtopics: ['tokenisation','word_vectors','transformers','fine_tuning','text_classification'] },
+    { id: 'data_analysis',   label: 'Data Analysis',   icon: '📊', subtopics: ['pandas','data_cleaning','eda','visualisation','statistical_analysis'] },
+  ];
+
+  let selectedTopics = new Set();
+  let confidenceMap  = {};
+
+  // ─── INIT ─────────────────────────────────
+  function init() {
+    renderTopicChips();
+    document.getElementById('studentName').addEventListener('input', updateAnalyzeBtn);
+  }
+
+  // ─── TOPIC CHIPS ──────────────────────────
+  function renderTopicChips() {
+    const container = document.getElementById('topicChips');
+    container.innerHTML = TOPICS.map(t => `
+      <button
+        class="topic-chip ${selectedTopics.has(t.id) ? 'selected' : ''}"
+        onclick="toggleTopic('${t.id}')"
+        data-topic="${t.id}"
+      >
+        <span>${t.icon}</span>
+        <span>${t.label}</span>
+      </button>
+    `).join('');
+  }
+
+  function toggleTopic(id) {
+    if (selectedTopics.has(id)) {
+      selectedTopics.delete(id);
+    } else {
+      selectedTopics.add(id);
+    }
+    renderTopicChips();
+    renderConfidenceSliders();
+    updateAnalyzeBtn();
+  }
+
+  // ─── CONFIDENCE SLIDERS ───────────────────
+  function renderConfidenceSliders() {
+    const section   = document.getElementById('confidenceSection');
+    const container = document.getElementById('sliderContainer');
+
+    if (selectedTopics.size === 0) {
+      section.classList.add('hidden');
+      return;
+    }
+    section.classList.remove('hidden');
+
+    const topicsArr = TOPICS.filter(t => selectedTopics.has(t.id));
+    container.innerHTML = topicsArr.map(t => {
+      if (!confidenceMap[t.id]) {
+        confidenceMap[t.id] = {};
+        t.subtopics.forEach(s => { confidenceMap[t.id][s] = 50; });
+      }
+      return `
+        <div class="glass-card rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-xl">${t.icon}</span>
+            <span class="font-display font-600 text-slate-800">${t.label}</span>
+          </div>
+          <div class="space-y-4">
+            ${t.subtopics.map(s => `
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <span class="text-sm text-slate-600 font-medium">${s.replace(/_/g,' ')}</span>
+                  <span class="text-sm font-700 text-sky-600 w-8 text-right" id="val_${t.id}_${s}">${confidenceMap[t.id][s]}</span>
+                </div>
+                <input type="range" class="conf-slider" min="0" max="100"
+                  value="${confidenceMap[t.id][s]}"
+                  style="--val:${confidenceMap[t.id][s]}%"
+                  oninput="updateConfidence('${t.id}','${s}',this.value)"
+                />
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function updateConfidence(topicId, subtopic, value) {
+    confidenceMap[topicId][subtopic] = parseInt(value);
+    const el = document.getElementById(`val_${topicId}_${subtopic}`);
+    if (el) el.textContent = value;
+    // Update gradient
+    const slider = event.target;
+    slider.style.setProperty('--val', value + '%');
+  }
+
+  // ─── WEEKS ────────────────────────────────
+  function adjustWeeks(delta) {
+    weeks = Math.max(1, Math.min(12, weeks + delta));
+    document.getElementById('weeksDisplay').textContent = weeks;
+  }
+
+  // ─── ANALYZE BTN STATE ────────────────────
+  function updateAnalyzeBtn() {
+    const btn  = document.getElementById('analyzeBtn');
+    const name = document.getElementById('studentName').value.trim();
+    btn.disabled = selectedTopics.size === 0 || !name;
+  }
+
+  // ─── SANITIZE INPUTS (client-side) ────────
+  function sanitizeString(s) {
+    return String(s)
+      .replace(/<[^>]*>/g, '')
+      .replace(/[&'"]/g, '')
+      .trim()
+      .slice(0, 200);
+  }
+
+  // ─── RUN ANALYSIS ─────────────────────────
+  async function runAnalysis() {
+    const studentName = sanitizeString(document.getElementById('studentName').value);
+
+    // Show loading
+    showLoading();
+
+    // Build payload
+    const payload = {
+      student_name:    studentName,
+      topics:          Array.from(selectedTopics),
+      confidence_map:  confidenceMap,
+      timeline_weeks:  weeks
+    };
+
+    simulateAgentLogs();
+
+    try {
+      const res = await fetch(`${API_BASE}/analyze`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      result = await res.json();
+      showRoadmap(result);
+
+    } catch (err) {
+      // Graceful fallback: simulate result if backend is offline
+      console.warn('Backend offline, using simulation:', err.message);
+      result = simulateResult(payload);
+      showRoadmap(result);
+    }
+  }
+
+  // ─── SIMULATION (offline fallback) ────────
+  function simulateResult(payload) {
+    const { student_name, topics, confidence_map, timeline_weeks } = payload;
+    const gap_reports = {};
+    const roadmap_topics = [];
+
+    topics.forEach(topic => {
+      const cm = confidence_map[topic] || {};
+      const scores = Object.values(cm);
+      const avg = scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : 45;
+      const level = avg < 30 ? 'Beginner (Restart from basics)' : avg < 60 ? 'Intermediate (Targeted refresh)' : 'Advanced (Quick brushup)';
+      const weak  = Object.entries(cm).filter(([k,v]) => v < 40).map(([k]) => k.replace(/_/g,' '));
+      const strong = Object.entries(cm).filter(([k,v]) => v >= 40).map(([k]) => k.replace(/_/g,' '));
+      const hrs   = avg < 30 ? 15 : avg < 60 ? 8 : 3;
+
+      gap_reports[topic] = { topic, overall_score: Math.round(avg), proficiency_level: level, weak_areas: weak, strong_areas: strong, estimated_refresh_hours: hrs, priority_gaps: weak.slice(0,3).map(w=>({subtopic:w,score:20,urgency:'High'})) };
+
+      roadmap_topics.push({
+        topic: topic.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
+        raw_topic: topic,
+        proficiency_level: level,
+        total_hours: hrs,
+        score: Math.round(avg),
+        weak_areas: weak,
+        phases: [
+          { phase:1, name:'Foundation Reset', focus:'Core concepts & syntax review', hours: Math.round(hrs*0.4*10)/10, milestones: ['Review fundamentals notebook','Identify top 3 weak spots','Complete 5 practice problems'] },
+          { phase:2, name:'Applied Practice', focus:'Worked examples & mini projects', hours: Math.round(hrs*0.4*10)/10, milestones: ['Build a small project','Solve 3 medium exercises','Peer review or self-audit'] },
+          { phase:3, name:'Project Sprint',   focus:'End-to-end real project',      hours: Math.round(hrs*0.2*10)/10, milestones: ['Deploy or publish a project','Write a reflection note'] },
+        ],
+        resources: getSimulatedResources(topic, level)
+      });
+    });
+
+    const total_hours = roadmap_topics.reduce((a,t)=>a+t.total_hours, 0);
+
+    return {
+      status: 'success (simulated)',
+      student_name,
+      gap_reports,
+      roadmap: {
+        title: "Your Personalised Tech-Restart Roadmap",
+        student_name,
+        timeline_weeks,
+        topics: roadmap_topics,
+        total_hours_required: total_hours,
+        daily_commitment_minutes: Math.round(total_hours*60/(timeline_weeks*7)),
+        weekly_schedule: Array.from({length:timeline_weeks}, (_,i) => ({
+          week: i+1,
+          theme: `Week ${i+1}: ${i===0?'Foundation Reset':i===1?'Applied Practice':'Project Sprint'}`,
+          topics: roadmap_topics.map(t => ({ topic: t.topic, phase: t.phases[Math.min(i,2)].name, focus: t.phases[Math.min(i,2)].focus, daily_hours: 0.5 }))
+        }))
+      },
+      agent_logs: [
+        '[DiagnosticAgent] Starting diagnostic...',
+        `[DiagnosticAgent] Analysed ${topics.length} topics`,
+        '[RoadmapArchitect] Building phased roadmap...',
+        `[RoadmapArchitect] Roadmap built: ${Math.round(total_hours)}h over ${timeline_weeks} weeks`,
+        '[ResourceScout] MCP Library loaded from course_library.json',
+        `[ResourceScout] Scouting resources for ${topics.length} topics`,
+        '[ResourceScout] Resource scouting complete'
+      ]
+    };
+  }
+
+  const RESOURCE_POOL = {
+    python: [
+      { title:'Python Basics Refresher (Kaggle)', url:'https://kaggle.com/learn/python', type:'interactive', duration_hours:5, description:'Official Kaggle Python course.' },
+      { title:'CS50P – Intro to Python (Harvard)', url:'https://cs50.harvard.edu/python', type:'video+exercises', duration_hours:12, description:"Harvard's thorough Python course." }
+    ],
+    machine_learning: [
+      { title:'Intro to ML (Kaggle)', url:'https://kaggle.com/learn/intro-to-machine-learning', type:'interactive', duration_hours:3, description:'Intuitive, hands-on ML intro.' },
+      { title:'Andrew Ng ML Specialization', url:'https://coursera.org/specializations/machine-learning-introduction', type:'video', duration_hours:33, description:'Gold-standard ML course.' }
+    ],
+    deep_learning: [
+      { title:'fast.ai Practical Deep Learning', url:'https://fast.ai', type:'video+notebooks', duration_hours:20, description:'Top-down practical DL.' },
+      { title:'Deep Learning Specialization', url:'https://coursera.org/specializations/deep-learning', type:'video', duration_hours:80, description:"Andrew Ng's 5-course DL deep dive." }
+    ],
+    javascript: [
+      { title:'The Odin Project – Foundations', url:'https://theodinproject.com', type:'project-based', duration_hours:60, description:'Best free JS curriculum.' },
+      { title:'javascript.info', url:'https://javascript.info', type:'reading', duration_hours:25, description:'The modern JS bible.' }
+    ],
+    nlp: [
+      { title:'Hugging Face NLP Course', url:'https://huggingface.co/learn/nlp-course', type:'interactive', duration_hours:15, description:'Definitive transformers guide.' }
+    ],
+    data_analysis: [
+      { title:'Pandas (Kaggle)', url:'https://kaggle.com/learn/pandas', type:'interactive', duration_hours:4, description:'Essential Pandas for data wrangling.' },
+      { title:'Data Visualisation (Kaggle)', url:'https://kaggle.com/learn/data-visualization', type:'interactive', duration_hours:4, description:'Visual storytelling with Python.' }
+    ]
+  };
+
+  function getSimulatedResources(topic, level) {
+    return (RESOURCE_POOL[topic] || []).slice(0, 2);
+  }
+
+  // ─── LOADING ANIMATION ────────────────────
+  function showLoading() {
+    document.getElementById('page1').classList.remove('active');
+    document.getElementById('loadingView').classList.remove('hidden');
+    document.getElementById('loadingView').classList.add('active');
+  }
+
+  const agentMessages = [
+    '🔍 DiagnosticAgent: Analysing confidence scores…',
+    '🔍 DiagnosticAgent: Identifying weak areas…',
+    '🔍 DiagnosticAgent: Calculating proficiency levels…',
+    '🗺️ RoadmapArchitect: Designing phased plan…',
+    '🗺️ RoadmapArchitect: Generating weekly schedule…',
+    '🗺️ RoadmapArchitect: Setting milestones…',
+    '📚 ResourceScout: Querying MCP library…',
+    '📚 ResourceScout: Matching resources to gaps…',
+    '✅ Pipeline complete — roadmap ready!',
+  ];
+
+  function simulateAgentLogs() {
+    const log = document.getElementById('agentProgressLog');
+    log.innerHTML = '';
+    const textEl = document.getElementById('loadingText');
+    let i = 0;
+
+    const texts = ['Initialising agents…','Running diagnostic…','Building roadmap…','Scouting resources…'];
+    let ti = 0;
+
+    const interval = setInterval(() => {
+      if (i >= agentMessages.length) { clearInterval(interval); return; }
+      const div = document.createElement('div');
+      div.className = 'agent-log-line';
+      div.textContent = agentMessages[i];
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+      if (i % 3 === 0 && ti < texts.length) textEl.textContent = texts[ti++];
+      i++;
+    }, 300);
+  }
+
+  // ─── RENDER ROADMAP ───────────────────────
+  function showRoadmap(data) {
+    setTimeout(() => {
+      document.getElementById('loadingView').classList.add('hidden');
+      document.getElementById('loadingView').classList.remove('active');
+
+      const roadmap = data.roadmap;
+      const content = document.getElementById('roadmapContent');
+
+      content.innerHTML = `
+        <!-- Roadmap Header -->
+        <div class="mb-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <div>
+              <div class="section-label mb-1">Your Personalised Roadmap</div>
+              <h2 class="font-display text-3xl font-700 text-slate-800">
+                ${roadmap.student_name}'s Refresher Plan
+              </h2>
+            </div>
+            <div class="flex gap-3">
+              <button class="btn-ghost" onclick="goToStep(3)">
+                View Resources →
+              </button>
+              <button class="btn-ghost" onclick="goToStep(1)">
+                ← Restart
+              </button>
+            </div>
+          </div>
+          <p class="text-slate-500 text-sm">Generated by RoadmapArchitect · Verified by DiagnosticAgent · Resources from MCP</p>
+        </div>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          ${statCard('⏱️', `${roadmap.total_hours_required}h`, 'Total Study Time')}
+          ${statCard('📅', `${roadmap.timeline_weeks} wks`, 'Your Timeline')}
+          ${statCard('🔥', `${roadmap.daily_commitment_minutes} min`, 'Daily Commitment')}
+          ${statCard('📚', `${roadmap.topics.length}`, 'Topics Covered')}
+        </div>
+
+        <!-- Topic Plans -->
+        <div class="space-y-6 mb-10">
+          ${roadmap.topics.map(t => renderTopicPlan(t)).join('')}
+        </div>
+
+        <!-- Weekly Schedule -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+          <div class="section-label mb-4">Weekly Schedule</div>
+          <div class="space-y-4">
+            ${roadmap.weekly_schedule.map(w => `
+              <div class="week-card">
+                <div class="font-display font-600 text-slate-700 text-sm mb-2">${w.theme}</div>
+                <div class="flex flex-wrap gap-2">
+                  ${w.topics.map(t => `
+                    <span class="text-xs px-3 py-1 rounded-full bg-sky-50 border border-sky-100 text-sky-700 font-medium">
+                      ${t.topic} · ${t.phase}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Agent Logs (collapsed) -->
+        <details class="glass-card rounded-xl p-4">
+          <summary class="cursor-pointer text-sm font-600 text-slate-600 select-none">
+            🤖 Agent Execution Logs (${data.agent_logs?.length || 0} entries)
+          </summary>
+          <div class="mt-3 space-y-1 font-mono">
+            ${(data.agent_logs || []).map(l => `<div class="agent-log-line">${l}</div>`).join('')}
+          </div>
+        </details>
+      `;
+
+      goToStep(2, false);
+    }, agentMessages.length * 300 + 400);
+  }
+
+  function statCard(icon, value, label) {
+    return `
+      <div class="glass-card rounded-xl p-4 text-center">
+        <div class="text-2xl mb-1">${icon}</div>
+        <div class="font-display font-700 text-xl text-slate-800">${value}</div>
+        <div class="text-xs text-slate-500">${label}</div>
+      </div>
+    `;
+  }
+
+  function renderTopicPlan(t) {
+    const scoreColor = t.score < 30 ? 'text-red-500' : t.score < 60 ? 'text-amber-500' : 'text-emerald-500';
+    const barColor   = t.score < 30 ? 'bg-gradient-to-r from-red-400 to-red-500' : t.score < 60 ? 'bg-gradient-to-r from-amber-400 to-amber-500' : 'bg-gradient-to-r from-emerald-400 to-emerald-500';
+    const levelBadge = t.score < 30 ? 'bg-red-50 text-red-600 border-red-100' : t.score < 60 ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100';
+
+    return `
+      <div class="glass-card rounded-2xl p-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 class="font-display font-700 text-lg text-slate-800">${t.topic}</h3>
+              <span class="text-xs px-2.5 py-1 rounded-full border font-600 ${levelBadge}">
+                ${t.proficiency_level.split(' ')[0]}
+              </span>
+            </div>
+            <div class="text-sm text-slate-500">${t.proficiency_level} · ${t.total_hours}h to refresh</div>
+          </div>
+          <div class="text-right">
+            <div class="font-display font-700 text-3xl ${scoreColor}">${t.score}<span class="text-base font-500 text-slate-400">/100</span></div>
+            <div class="text-xs text-slate-400">confidence score</div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="h-2 bg-sky-50 rounded-full mb-5 overflow-hidden">
+          <div class="${barColor} h-full rounded-full transition-all" style="width:${t.score}%"></div>
+        </div>
+
+        <!-- Weak areas -->
+        ${t.weak_areas.length ? `
+          <div class="mb-5">
+            <div class="text-xs font-600 text-red-500 uppercase tracking-wide mb-2">⚠ Gaps to Address</div>
+            <div class="flex flex-wrap gap-2">
+              ${t.weak_areas.map(w => `<span class="text-xs px-2.5 py-1 bg-red-50 border border-red-100 text-red-600 rounded-full font-medium">${w}</span>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Phases -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          ${t.phases.map(p => `
+            <div class="bg-sky-50/50 border border-sky-100 rounded-xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="phase-badge phase-${p.phase}">Phase ${p.phase}</span>
+              </div>
+              <div class="font-600 text-slate-700 text-sm mb-1">${p.name}</div>
+              <div class="text-xs text-slate-500 mb-3">${p.focus}</div>
+              <ul class="space-y-1">
+                ${(p.milestones || []).map(m => `
+                  <li class="flex items-start gap-1.5 text-xs text-slate-600">
+                    <span class="text-sky-400 mt-0.5 flex-shrink-0">▸</span>
+                    ${m}
+                  </li>
+                `).join('')}
+              </ul>
+              <div class="mt-3 text-xs font-600 text-sky-600">${p.hours}h</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // ─── RENDER RESOURCES ─────────────────────
+  function showResources() {
+    if (!result) return;
+    const content = document.getElementById('resourcesContent');
+    const topics  = result.roadmap.topics;
+
+    content.innerHTML = `
+      <div class="mb-8">
+        <div class="section-label mb-1">MCP Resource Scout</div>
+        <h2 class="font-display text-3xl font-700 text-slate-800 mb-2">Curated Learning Resources</h2>
+        <p class="text-slate-500 text-sm">Hand-picked by ResourceScout via the local MCP server · Matched to your gaps</p>
+      </div>
+
+      <div class="space-y-8">
+        ${topics.map(t => {
+          const resources = t.resources || [];
+          if (!resources.length) return '';
+          return `
+            <div class="glass-card rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-8 h-8 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+                <div>
+                  <div class="font-display font-700 text-slate-800">${t.topic}</div>
+                  <div class="text-xs text-slate-400">${resources.length} resource${resources.length > 1 ? 's' : ''} matched</div>
+                </div>
+              </div>
+              <div class="space-y-3">
+                ${resources.map(r => renderResourceCard(r)).join('')}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="mt-8 flex gap-3">
+        <button class="btn-primary" onclick="goToStep(2)">← Back to Roadmap</button>
+        <button class="btn-ghost" onclick="goToStep(1)">Start Over</button>
+      </div>
+    `;
+  }
+
+  function renderResourceCard(r) {
+    const typeColors = {
+      'interactive':     'bg-sky-50 text-sky-600 border-sky-100',
+      'video+exercises': 'bg-purple-50 text-purple-600 border-purple-100',
+      'video':           'bg-purple-50 text-purple-600 border-purple-100',
+      'book':            'bg-amber-50 text-amber-600 border-amber-100',
+      'project-based':   'bg-emerald-50 text-emerald-600 border-emerald-100',
+      'reading':         'bg-slate-50 text-slate-600 border-slate-100',
+      'video+notebooks': 'bg-blue-50 text-blue-600 border-blue-100',
+      'reading+exercises':'bg-teal-50 text-teal-600 border-teal-100',
+      'intensive':       'bg-orange-50 text-orange-600 border-orange-100',
+    };
+    const typeClass = typeColors[r.type] || 'bg-gray-50 text-gray-600 border-gray-100';
+
+    return `
+      <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="resource-card group block no-underline">
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="font-600 text-slate-800 text-sm group-hover:text-sky-600 transition truncate">${r.title}</span>
+            <span class="text-xs px-2 py-0.5 rounded-full border ${typeClass} font-medium flex-shrink-0">${r.type}</span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed">${r.description || ''}</p>
+          <div class="mt-2 flex items-center gap-4">
+            ${r.duration_hours ? `<span class="text-xs text-sky-500 font-600">⏱ ~${r.duration_hours}h</span>` : ''}
+            <span class="text-xs text-sky-400 group-hover:underline">${r.url.replace(/^https?:\/\//, '').split('/')[0]}</span>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-slate-300 group-hover:text-sky-400 flex-shrink-0 mt-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+    `;
+  }
+
+  // ─── STEP NAVIGATION ──────────────────────
+  function goToStep(n, render = true) {
+    if (n === 3 && render) showResources();
+
+    // Hide all pages
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page${n}`).classList.add('active');
+
+    // Update pills
+    document.querySelectorAll('.step-pill').forEach(p => {
+      const s = parseInt(p.dataset.step);
+      p.classList.remove('active', 'done');
+      if (s === n) p.classList.add('active');
+      else if (s < n) p.classList.add('done');
+    });
+
+    // Update dot icons for done steps
+    document.querySelectorAll('.step-pill.done .dot').forEach(d => {
+      d.innerHTML = '✓';
+    });
+
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── BOOT ─────────────────────────────────
+  init();
+  </script>
+</body>
+</html>
